@@ -7,6 +7,8 @@ ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 #define BLUE_LED 25
 #define RED_LED 33
 #define GREEN_LED 32
+#define ledPin 26
+#define motor 27
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
@@ -36,6 +38,10 @@ void setup() {
   pinMode(BLUE_LED, OUTPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motor, OUTPUT);
+
+  digitalWrite(motor, HIGH);
 
   Serial.println("LEDs setup");
 }
@@ -56,4 +62,17 @@ void loop() {
 
     vTaskDelay(1);
   delay(150);
+
+    for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++){   
+    // changing the LED brightness with PWM
+    analogWrite(ledPin, dutyCycle);
+    delay(15);
+  }
+
+  // decrease the LED brightness
+  for(int dutyCycle = 255; dutyCycle >= 0; dutyCycle--){
+    // changing the LED brightness with PWM
+    analogWrite(ledPin, dutyCycle);
+    delay(15);
+  }
 }
