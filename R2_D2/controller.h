@@ -1,5 +1,5 @@
-#ifndef BLUETOOTH_H
-#define BLUETOOTH_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
 void onConnectedController(ControllerPtr ctl);
 void onDisconnectedController(ControllerPtr ctl);
