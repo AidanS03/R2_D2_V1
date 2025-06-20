@@ -18,3 +18,21 @@ The tutorial walked me through every step but left out a few small details that 
 3. The processGamepad() function in the example does work but it has a few issues that I fixed in mine
    - you cannot press multiple buttons at the same time
    - when pressing one button on the Dpad it would get immediatly overwritten by the other Dpad buttons not being pressed
+     
+## Motor control 
+
+I am using an L298N dual H-bridge motor controller to control the speed and direction of 2 12V DC motors with 90 degree gear boxes. 
+
+**add picture of h-bridge and motor**
+
+The L298N has 2 types of intputs, power and data. The power inputs control the voltage the motors will be driven at, in my case I am using the 12V input and ground from a 12V Li-ion battery. However, there is a 5V input if you are using smaller motors. Additionally, don't forget to common the grounds between your motor voltage source (battery) and your control circuit. The data inputs are what control the speed and direction, 4 pins labeled IN1-IN4 control the direction. IN1 and IN2 controlling the direction of motor A, and IN3 and IN4 controlling the direction of motor B, the table below has more detail. Speed control is done through the ENA and ENB pins, which stand for enable A and enable B. By default these pins have a jumper on them tying them to a logical high which means the motor will always be driven at full speed. I removed this jumper so I can implement speed control by utilizing a PWM signal, by varying the duty cycle I can change the speed of the motor. With a high duty cycle the average voltage is higher making the motor go faster and vise versa for a low duty cycle.
+
+Here is a good tutorial for how to use the L298N: https://lastminuteengineers.com/l298n-dc-stepper-driver-arduino-tutorial/ 
+
+**L298N Truth Table:**
+| IN1/IN3 | IN2/IN4 | Output |
+| ------- | ------- | ------ |
+| Low (0) | Low (0) | Motor off |
+| High (1) | Low (0) | Forward |
+| Low (0) | High (1) | Backward |
+| High (1) | High (1) | Motor off |
