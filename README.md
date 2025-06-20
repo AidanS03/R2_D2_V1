@@ -24,10 +24,10 @@ The tutorial walked me through every step but left out a few small details that 
 I am using an L298N dual H-bridge motor controller to control the speed and direction of 2 12V DC motors with 90 degree gear boxes. 
 
 **L928N H-bridge:**  
-<img src="/L298N-Motor-Driver.webp" width="800">
+<img src="images/L298N-Motor-Driver.webp" width="800">
 
 **12V DC Motor:**  
-<img src="12V_DC_Motor.jpg" width="800">
+<img src="images/12V_DC_Motor.jpg" width="800">
 
 
 The L298N has 2 types of intputs, power and data. The power inputs control the voltage the motors will be driven at, in my case I am using the 12V input and ground from a 12V Li-ion battery. However, there is a 5V input if you are using smaller motors. Additionally, don't forget to common the grounds between your motor voltage source (battery) and your control circuit. The data inputs are what control the speed and direction, 4 pins labeled IN1-IN4 control the direction. IN1 and IN2 controlling the direction of motor A, and IN3 and IN4 controlling the direction of motor B, the table below has more detail. Speed control is done through the ENA and ENB pins, which stand for enable A and enable B. By default these pins have a jumper on them tying them to a logical high which means the motor will always be driven at full speed. I removed this jumper so I can implement speed control by utilizing a PWM signal, by varying the duty cycle I can change the speed of the motor. With a high duty cycle the average voltage is higher making the motor go faster and vise versa for a low duty cycle.
