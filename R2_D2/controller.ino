@@ -64,54 +64,67 @@ void dumpGamepad(ControllerPtr ctl) {
 // ========= GAME CONTROLLER ACTIONS SECTION ========= //
 
 void processGamepad(ControllerPtr ctl) {
-  // Joystick values
-  int x = ctl->axisX();
-  int y = ctl->axisY();
+  if(!autonomous){
+    // Joystick values
+    int x = ctl->axisX();
+    int y = ctl->axisY();
+  
+    // Deadzone
+    if (abs(x) < 50) x = 0;
+    if (abs(y) < 50) y = 0;
+  
+    // Differential drive
+    int leftSpeed = y + x;
+    int rightSpeed = y - x;
+  
+    // Clip
+    leftSpeed = constrain(leftSpeed, -512, 512);
+    rightSpeed = constrain(rightSpeed, -512, 512);
+  
+    // Map to PWM
+    int leftPwm = map(abs(leftSpeed), 0, 512, 0, 255);
+    int rightPwm = map(abs(rightSpeed), 0, 512, 0, 255);
+  
+    // Set left motor direction
+    if (leftSpeed >= 0) {
+      digitalWrite(IN1, HIGH);
+      digitalWrite(IN2, LOW);
+    } else {
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, HIGH);
+    }
+  
+    // Set right motor direction
+    if (rightSpeed >= 0) {
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, LOW);
+    } else {
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN4, HIGH);
+    }
+  
+    // Set speeds
+    analogWrite(ENABLE_A, leftPwm);
+    analogWrite(ENABLE_B, rightPwm);
 
-  // Deadzone
-  if (abs(x) < 50) x = 0;
-  if (abs(y) < 50) y = 0;
-
-  // Differential drive
-  int leftSpeed = y + x;
-  int rightSpeed = y - x;
-
-  // Clip
-  leftSpeed = constrain(leftSpeed, -512, 512);
-  rightSpeed = constrain(rightSpeed, -512, 512);
-
-  // Map to PWM
-  int leftPwm = map(abs(leftSpeed), 0, 512, 0, 255);
-  int rightPwm = map(abs(rightSpeed), 0, 512, 0, 255);
-
-  // Set left motor direction
-  if (leftSpeed >= 0) {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-  } else {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
+    Serial.printf("Left: %d Right: %d\n", leftSpeed, rightSpeed);
   }
-
-  // Set right motor direction
-  if (rightSpeed >= 0) {
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
-  } else {
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-  }
-
-  // Set speeds
-  analogWrite(ENABLE_A, leftPwm);
-  analogWrite(ENABLE_B, rightPwm);
-
-  // Optional: print speeds
-  Serial.printf("Left: %d Right: %d\n", leftSpeed, rightSpeed);
-
   // Example button code (you can keep or remove)
   if ((ctl->buttons() & 0x1) == 0x1) {
-    Serial.println("X pressed...");
+    if(xPressed){
+      
+    }else {
+      Serial.println("X pressed...");
+      autonomous = !autonomous;
+      if(autonomous){
+          x_hat_plus[0][0] = getDist('R');
+          x_hat_plus[1][0] = 0;
+          x_hat_plus[2][0] = getDist('R') + getDist('L');
+      }
+      xPressed = true;
+    }
+  }else if(xPressed){
+    xPressed = false;
   }
 
   if ((ctl->buttons() & 0x8) == 0x8) {
